@@ -10,6 +10,7 @@ app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.static("public"));
 
 var todoItems=["Buy Food","Wash cloths"];
+var workItems=[];
 
 app.get("/" , (req,res)=>{
     const date = new Date();
@@ -18,14 +19,25 @@ app.get("/" , (req,res)=>{
 
     var formatedDate = date.toLocaleDateString("en-US", options);
 
-    res.render("todo", {Date:formatedDate, todoItems:todoItems});
+    res.render("todo", {Title:formatedDate, todoItems:todoItems});
 })
 
-
+app.get("/work" , (req,res)=>{
+    res.render("todo", {Title:"Work List", todoItems:workItems});
+})
 
 app.post("/", (req,res)=>{
-    todoItems.push(req.body.newItem);
-    res.redirect("/");
+    
+    if(req.body.button === "Work List")
+    {
+        workItems.push(req.body.newItem);
+        res.redirect("/work");
+    }
+    else
+    {
+        todoItems.push(req.body.newItem);
+        res.redirect("/");
+    }
 })
 
 app.listen(3000 , ()=>{
