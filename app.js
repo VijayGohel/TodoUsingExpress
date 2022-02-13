@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyparser= require("body-parser");
-const ejs = require("ejs");
+const date = require(__dirname+"/date");
 
 const app = express();
 
@@ -13,13 +13,9 @@ var todoItems=["Buy Food","Wash cloths"];
 var workItems=[];
 
 app.get("/" , (req,res)=>{
-    const date = new Date();
+    
 
-    var options = { weekday: 'long', day: 'numeric', month: 'long',year: 'numeric'};
-
-    var formatedDate = date.toLocaleDateString("en-US", options);
-
-    res.render("todo", {Title:formatedDate, todoItems:todoItems});
+    res.render("todo", {Title:date.getDate(), todoItems:todoItems});
 })
 
 app.get("/work" , (req,res)=>{
