@@ -7,6 +7,7 @@ const app = express();
 app.set("view engine", "ejs");
 
 app.use(bodyparser.urlencoded({extended:true}));
+app.use(express.static("public"));
 
 var todoItems=["Buy Food","Wash cloths"];
 
@@ -21,10 +22,12 @@ app.get("/" , (req,res)=>{
 })
 
 
+
 app.post("/", (req,res)=>{
     todoItems.push(req.body.newItem);
     res.redirect("/");
 })
+
 app.listen(3000 , ()=>{
     console.log("Server started on 3000");
 })

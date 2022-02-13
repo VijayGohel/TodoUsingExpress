@@ -1,0 +1,67 @@
+*{
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+body
+{
+  background-image: url(images/background.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.box
+{
+  
+  width: 40%;
+  margin: 50px auto;
+}
+
+.box h1{
+  background-color: #6998AB;
+  padding: 10px;
+  text-align: center;
+}
+
+.tile
+{
+  width: auto;
+  padding: 15px;
+  background-color: #B1D0E0;
+  border: 1px solid #6998AB;
+  
+  margin: 15px 0;
+}
+
+.tile p{
+  display: inline-block;
+  margin-left: 10px;
+}
+
+input[type="text"]
+{
+  width:70%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #6998AB;
+  background-color: #B1D0E0;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+input[type=checkbox]:checked + p
+{
+  text-decoration: line-through;
+}
+
+button
+{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-left: 20px;
+  border: transparent;
+  background-color: #6998AB;
+  /* padding: 5px; */
+  font-size: 24px;
+}
