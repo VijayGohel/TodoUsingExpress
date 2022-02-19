@@ -2,6 +2,7 @@ const express = require("express");
 const bodyparser= require("body-parser");
 const date = require(__dirname+"/date");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 
@@ -16,8 +17,13 @@ const todoSchema = {
     name:String
 }
 
+const listSchema={
+    name:String,
+    items:[todoSchema]
+}
 const todo = mongoose.model("todoList",todoSchema);
 
+const List= mongoose.model("List",listSchema);
 // var todoItems=["Buy Food","Wash cloths"];
 // var workItems=[];
 
@@ -33,39 +39,86 @@ app.get("/" , (req,res)=>{
     
 })
 
+app.get("/:listName", (req,res)=>{
+    const listName = _.capitalize(req.params.listName);
+
+    List.findOne({name:listName},(err,result)=>{
+        
+        if(!err){
+            if(!result){
+                const list = new List({
+                    name: listName,
+                    items:[]
+                })
+            
+                list.save();
+                res.render("todo", {Title:listName, todoItems:list.items});  
+            }
+            else
+                res.render("todo", {Title:listName, todoItems:result.items});  
+        }
+        
+    })
+    
+    
+})
 // app.get("/work" , (req,res)=>{
 //     res.render("todo", {Title:"Work List", todoItems:workItems});
 // })
 
 app.post("/", (req,res)=>{
     
-    if(req.body.button === "Work List")
+    const newListItem = new todo({
+        name:req.body.newItem
+    });
+
+    if(req.body.button === date.getDate())
     {
-        workItems.push(req.body.newItem);
-        res.redirect("/work");
+        // todoItems.push(req.body.newItem);
+        newListItem.save();
+        res.redirect("/");
     }
     else
     {
-        // todoItems.push(req.body.newItem);
-        new todo({
-            name:req.body.newItem
-        }).save();
-        res.redirect("/");
+        // List.updateOne({name:req.body.button}, {items: []},(err)=>{
+        //     if(!err)
+        //         res.redirect("/"+req.body.button);
+        // });
+
+        List.findOne({name:req.body.button}, (err,result)=>{
+            // console.log(result);
+            result.items.push(newListItem);
+            result.save();
+            // console.log(result);
+            res.redirect("/"+result.name);
+        })
+        // workItems.push(req.body.newItem);
+        
     }
 })
 
 app.post("/delete",(req,res)=>{
 
-    console.log(req.body);
-
-    todo.deleteOne({_id:{$eq:req.body.checkbox}},(err)=>{
-        if(err)
-                console.log(err);
-            else
-                console.log("Item deleted successfully");
-    })
-    res.redirect("/");
-
+    // console.log(req.body);
+    if(req.body.ListName === date.getDate()){
+        todo.deleteOne({_id:{$eq:req.body.checkbox}},(err)=>{
+            if(err)
+                    console.log(err);
+                else
+                    console.log("Item deleted successfully");
+        })
+        res.redirect("/");
+    }
+    else
+    {
+        List.findOneAndUpdate({name:req.body.ListName}, {$pull:{items:{_id:req.body.checkbox}}},(err,result)=>{
+            if(!err)
+            {   
+                res.redirect("/"+req.body.ListName);
+            }
+        });
+        
+    }
 })
 
 app.listen(3000 , ()=>{
